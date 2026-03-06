@@ -11,9 +11,13 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 
+import { validateEmail, validatePassword } from "@/lib/utils/validators";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,6 +27,18 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setEmailError(null);
+    setPasswordError(null);
+
+    const eError = validateEmail(email);
+    const pError = validatePassword(password);
+
+    if (eError || pError) {
+      setEmailError(eError);
+      setPasswordError(pError);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -70,10 +86,12 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background overflow-hidden px-4 sm:px-6 lg:px-8">
+      
       <div className="absolute top-0 right-0 -z-10 h-120 w-120 translate-x-1/3 -translate-y-1/3 rounded-full bg-primary/10 blur-[120px] dark:bg-primary/10" />
       <div className="absolute bottom-0 left-0 -z-10 h-120 w-120 -translate-x-1/3 translate-y-1/3 rounded-full bg-accent/10 blur-[120px] dark:bg-accent/10" />
 
       <div className="w-full max-w-md">
+        
         <div className="mb-10 text-center">
           <Link
             href="/"
@@ -104,11 +122,13 @@ export default function LoginPage() {
           </p>
         </div>
 
+        
         <Card className="shadow-premium rounded-3xl relative overflow-hidden">
+          
           <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-primary via-accent to-primary opacity-50" />
 
           <CardContent className="pt-8 sm:px-10 sm:pb-10">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
               <div className="space-y-5">
                 <Input
                   id="email"
@@ -116,12 +136,12 @@ export default function LoginPage() {
                   type="email"
                   label="Email Address"
                   placeholder="admin@test.com"
-                  required
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   leftIcon={EmailIcon}
                   className="bg-transparent"
+                  error={emailError ?? undefined}
                 />
 
                 <Input
@@ -130,15 +150,16 @@ export default function LoginPage() {
                   type="password"
                   label="Password"
                   placeholder="••••••••"
-                  required
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   leftIcon={LockIcon}
                   className="bg-transparent"
+                  error={passwordError ?? undefined}
                 />
               </div>
 
+              
               <div
                 className={`overflow-hidden transition-all duration-300 ${error ? "max-h-12 opacity-100" : "max-h-0 opacity-0"}`}
               >
@@ -178,6 +199,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
+        
         <div className="mt-8 flex items-center justify-center gap-4 text-sm text-surface-500">
           <Link href="/" className="transition-colors hover:text-foreground">
             &larr; Back to Home
