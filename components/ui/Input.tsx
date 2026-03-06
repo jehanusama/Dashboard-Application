@@ -42,6 +42,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             disabled={disabled}
             className={`
               w-full h-12 bg-white dark:bg-surface-900 border rounded-xl px-4 
+              text-surface-900 dark:text-surface-100 placeholder:text-surface-400
               transition-all duration-200 outline-none
               ${leftIcon ? "pl-11" : ""} 
               ${rightIcon ? "pr-11" : ""}

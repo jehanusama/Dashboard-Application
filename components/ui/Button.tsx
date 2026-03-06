@@ -32,9 +32,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         "bg-primary text-primary-foreground shadow-sm hover:bg-primary-600",
       secondary:
-        "bg-surface-100 dark:bg-surface-800 text-foreground border border-border hover:bg-surface-200 dark:hover:bg-surface-700",
+        "bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-700 hover:bg-surface-50 dark:hover:bg-surface-700",
       outline: "border-2 border-primary text-primary hover:bg-primary/5",
-      ghost: "text-foreground hover:bg-surface-100 dark:hover:bg-surface-800",
+      ghost:
+        "text-surface-900 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-800",
       accent: "bg-accent text-accent-foreground shadow-sm hover:opacity-90",
       danger: "bg-error text-white shadow-sm hover:bg-rose-600",
     };
@@ -70,12 +71,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             />
           </svg>
         )}
-        {!isLoading && leftIcon && (
-          <span className="flex-shrink-0">{leftIcon}</span>
-        )}
+        {!isLoading && leftIcon && <span className="shrink-0">{leftIcon}</span>}
         <span className="truncate">{children}</span>
         {!isLoading && rightIcon && (
-          <span className="flex-shrink-0">{rightIcon}</span>
+          <span className="shrink-0">{rightIcon}</span>
         )}
       </button>
     );
