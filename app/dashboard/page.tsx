@@ -1,16 +1,11 @@
 "use client";
 
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store";
-import { logout } from "@/store/authSlice";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function DashboardPage() {
-  const { user, isAuthenticated, isInitialized } = useSelector(
-    (state: RootState) => state.auth,
-  );
-  const dispatch = useDispatch();
+  const { user, isAuthenticated, isInitialized, logout } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -19,13 +14,7 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, isInitialized, router]);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push("/login");
-  };
-
   if (!isInitialized) return null;
-
   if (!isAuthenticated) return null;
 
   return (
@@ -37,7 +26,7 @@ export default function DashboardPage() {
             <p className="text-gray-500">Welcome back, {user?.name}</p>
           </div>
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
             Logout
