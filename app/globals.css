@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  /* Premium Color Palette */
+  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* Primary Scale - Indigo */
+
   --color-primary-50: #e0e7ff;
   --color-primary-100: #c7d2fe;
   --color-primary-200: #a5b4fc;
@@ -20,7 +20,7 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
 
-  /* Neutral Scale - Slate-like but custom */
+  
   --color-surface-50: #f8fafc;
   --color-surface-100: #f1f5f9;
   --color-surface-200: #e2e8f0;
@@ -33,7 +33,7 @@
   --color-surface-900: #0f172a;
   --color-surface-950: #020617;
 
-  /* Accent - Emerald */
+  
   --color-accent-50: #ecfdf5;
   --color-accent-100: #d1fae5;
   --color-accent-200: #a7f3d0;
@@ -47,25 +47,25 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
-  /* Semantic Colors */
+  
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #3b82f6;
 
-  /* UI Tokens */
+  
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Spacing & Radii */
+  
   --spacing-dashboard-x: 2rem;
   --spacing-dashboard-y: 1.5rem;
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-3xl: 2rem;
 
-  /* Shadows */
+  
   --shadow-soft:
     0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
   --shadow-premium:
@@ -88,6 +88,24 @@
     --border: #e2e8f0;
     --input: #e2e8f0;
     --ring: #4f46e5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #020617;
+      --foreground: #f8fafc;
+      --card: #0f172a;
+      --card-foreground: #f8fafc;
+      --popover: #0f172a;
+      --popover-foreground: #f8fafc;
+      --primary: #6366f1;
+      --primary-foreground: #ffffff;
+      --accent: #34d399;
+      --accent-foreground: #020617;
+      --border: #1e293b;
+      --input: #1e293b;
+      --ring: #6366f1;
+    }
   }
 
   .dark {
