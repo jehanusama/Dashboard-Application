@@ -35,6 +35,46 @@ export default function StatusDistributionChart() {
     }));
   }, [transactions]);
 
+  if (chartData.length === 0) {
+    return (
+      <div className="glass rounded-2xl p-6 h-[400px] flex flex-col gap-4">
+        <div>
+          <h3 className="text-xl font-bold text-surface-900 dark:text-surface-100">
+            Status Distribution
+          </h3>
+          <p className="text-sm text-surface-500 dark:text-surface-400">
+            Breakdown of transactions by status
+          </p>
+        </div>
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 text-surface-400">
+          <svg
+            className="h-12 w-12 opacity-40"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+            />
+          </svg>
+          <p className="text-sm font-medium">No status data available</p>
+          <p className="text-xs text-surface-400">
+            Transaction statuses will appear here
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="glass rounded-2xl p-6 h-[400px] flex flex-col gap-4">
       <div>

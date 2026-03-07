@@ -93,7 +93,6 @@ export default function DashboardPage() {
           <RevenueChart />
         </div>
 
-        
         <div className="glass rounded-2xl p-6 flex flex-col gap-6">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-surface-900 dark:text-surface-100 italic">
@@ -108,42 +107,62 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-4">
-            {recentTransactions.map((tx) => (
-              <div
-                key={tx.id}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors border border-transparent hover:border-surface-100 dark:hover:border-surface-700 group cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-linear-to-br from-surface-100 to-surface-200 dark:from-surface-700 dark:to-surface-800 flex items-center justify-center text-surface-600 dark:text-surface-300 font-bold group-hover:scale-110 transition-transform">
-                    {tx.customerName.charAt(0)}
+            {recentTransactions.length > 0 ? (
+              recentTransactions.map((tx) => (
+                <div
+                  key={tx.id}
+                  className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors border border-transparent hover:border-surface-100 dark:hover:border-surface-700 group cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-linear-to-br from-surface-100 to-surface-200 dark:from-surface-700 dark:to-surface-800 flex items-center justify-center text-surface-600 dark:text-surface-300 font-bold group-hover:scale-110 transition-transform">
+                      {tx.customerName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-surface-900 dark:text-surface-100">
+                        {tx.customerName}
+                      </p>
+                      <p className="text-xs text-surface-500">
+                        {new Date(tx.date).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-surface-900 dark:text-surface-100">
-                      {tx.customerName}
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-surface-900 dark:text-surface-100">
+                      ${tx.amount.toFixed(2)}
                     </p>
-                    <p className="text-xs text-surface-500">
-                      {new Date(tx.date).toLocaleDateString()}
+                    <p
+                      className={`text-[10px] font-bold uppercase tracking-wider ${
+                        tx.status === "completed"
+                          ? "text-success"
+                          : tx.status === "pending"
+                            ? "text-warning"
+                            : "text-error"
+                      }`}
+                    >
+                      {tx.status}
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-surface-900 dark:text-surface-100">
-                    ${tx.amount.toFixed(2)}
-                  </p>
-                  <p
-                    className={`text-[10px] font-bold uppercase tracking-wider ${
-                      tx.status === "completed"
-                        ? "text-success"
-                        : tx.status === "pending"
-                          ? "text-warning"
-                          : "text-error"
-                    }`}
-                  >
-                    {tx.status}
-                  </p>
-                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 gap-3 text-surface-400">
+                <svg
+                  className="h-10 w-10 opacity-40"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+                <p className="text-sm font-medium">No recent activity</p>
+                <p className="text-xs">Transactions will appear here</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

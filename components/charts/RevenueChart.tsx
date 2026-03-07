@@ -35,6 +35,40 @@ export default function RevenueChart() {
     }));
   }, [transactions]);
 
+  if (chartData.length === 0) {
+    return (
+      <div className="glass rounded-2xl p-6 h-[400px] flex flex-col gap-4">
+        <div>
+          <h3 className="text-xl font-bold text-surface-900 dark:text-surface-100">
+            Revenue Trend
+          </h3>
+          <p className="text-sm text-surface-500 dark:text-surface-400">
+            Daily completed transaction revenue
+          </p>
+        </div>
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 text-surface-400">
+          <svg
+            className="h-12 w-12 opacity-40"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+            />
+          </svg>
+          <p className="text-sm font-medium">No revenue data available</p>
+          <p className="text-xs text-surface-400">
+            Completed transactions will appear here
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="glass rounded-2xl p-6 h-[400px] flex flex-col gap-4">
       <div>

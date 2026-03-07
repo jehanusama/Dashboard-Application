@@ -2,10 +2,11 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Provider } from "react-redux";
-import { store } from "@/store";
+import { Provider, useSelector } from "react-redux";
+import { store, RootState } from "@/store";
 import { restoreSession } from "@/store/authSlice";
 import { useEffect } from "react";
+import { Spinner } from "@/components/ui/Loading";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,21 +18,38 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+function AppInitializer({ children }: { children: React.ReactNode }) {
+  const isInitialized = useSelector((s: RootState) => s.auth.isInitialized);
+
+  useEffect(() => {
+    // restoreSession reads localStorage — must run client-side only
+    store.dispatch(restoreSession());
+  }, []);
+
+  if (!isInitialized) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Spinner />
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  useEffect(() => {
-    store.dispatch(restoreSession());
-  }, []);
-
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Provider store={store}>{children}</Provider>
+        <Provider store={store}>
+          <AppInitializer>{children}</AppInitializer>
+        </Provider>
       </body>
     </html>
   );
