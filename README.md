@@ -105,7 +105,7 @@ cd Dashboard-Application
 **2. Build and start the container**
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 **3. Open the app**
@@ -115,7 +115,7 @@ Navigate to **http://localhost:3000** in your browser and log in with the creden
 **To stop the container:**
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 > Alternatively, build and run the image manually:
