@@ -47,7 +47,8 @@ export default function DashboardPage() {
       change: "-2.1%",
       positive: false,
       icon: ShoppingCart,
-      color: "bg-warning-500/10 text-warning-500 shadow-inner-glow",
+      color:
+        "bg-warning/10 text-warning dark:bg-warning/20 dark:text-warning shadow-inner-glow",
     },
     {
       title: "Total Orders",
@@ -55,7 +56,8 @@ export default function DashboardPage() {
       change: "+5.4%",
       positive: true,
       icon: TrendingUp,
-      color: "bg-info-500/10 text-info-500 shadow-inner-glow",
+      color:
+        "bg-info/10 text-info dark:bg-info/20 dark:text-info shadow-inner-glow",
     },
   ];
 
