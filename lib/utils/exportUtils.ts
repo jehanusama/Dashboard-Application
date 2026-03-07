@@ -38,7 +38,7 @@ export const exportToPDF = (data: Transaction[]) => {
     startY: 20,
     theme: "grid",
     styles: { fontSize: 8 },
-    headStyles: { fillColor: [99, 102, 241] },
+    headStyles: { fillColor: [99, 102, 241] }, 
   });
 
   doc.save(`transactions_export_${new Date().toISOString().split("T")[0]}.pdf`);

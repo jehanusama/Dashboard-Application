@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Table2,
   BarChart3,
-  Settings,
   ChevronLeft,
   ChevronRight,
   X,
@@ -30,7 +29,6 @@ const navItems: NavItem[] = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { label: "Data Table", href: "/dashboard/table", icon: Table2 },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -40,7 +38,6 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
 
   const [isDark, setIsDark] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -62,7 +59,7 @@ export default function Sidebar() {
     }, 0);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [setIsDark]);
 
   const toggleDark = () => {
     const html = document.documentElement;
@@ -143,6 +140,7 @@ export default function Sidebar() {
           </div>
         </div>
 
+        
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-2">
           <ul className="space-y-1">
             {navItems.map(({ label, href, icon: Icon }) => {
@@ -180,77 +178,59 @@ export default function Sidebar() {
           </ul>
         </nav>
 
-        <div className="shrink-0 border-t border-surface-200 dark:border-surface-700 p-4">
+        <div className="shrink-0 border-t border-surface-200 dark:border-surface-700 p-4 space-y-4">
+          
           <div
             className={[
-              "flex",
-              sidebarCollapsed
-                ? "flex-col items-center gap-4"
-                : "items-center justify-between",
+              "flex items-center gap-3",
+              sidebarCollapsed ? "flex-col" : "justify-between",
             ].join(" ")}
           >
+            
             <div
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
               className={[
-                "relative flex items-center gap-3 cursor-pointer",
-                !sidebarCollapsed
-                  ? "flex-1 min-w-0 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 p-2 -ml-2 mr-2 transition-colors"
-                  : "",
+                "flex items-center gap-3 min-w-0",
+                sidebarCollapsed ? "justify-center" : "flex-1 mr-2",
               ].join(" ")}
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-primary-500 to-primary-600 text-sm font-bold text-white shadow-sm ring-2 ring-white dark:ring-surface-900 transition-all hover:scale-105">
                 {initials}
               </div>
-
               {!sidebarCollapsed && (
-                <div className="overflow-hidden flex-1">
-                  <p className="text-sm font-semibold truncate text-surface-900 dark:text-surface-100">
+                <div className="overflow-hidden">
+                  <p className="text-sm font-semibold truncate text-surface-900 dark:text-surface-100 uppercase tracking-tight">
                     {user?.name}
                   </p>
-                  <p className="text-xs text-surface-500 dark:text-surface-400 truncate">
+                  <p className="text-[10px] text-surface-500 dark:text-surface-400 truncate font-medium">
                     {user?.email}
                   </p>
                 </div>
               )}
-
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className={[
-                  "absolute bottom-full mb-2 w-48 origin-bottom transition-all duration-150 rounded-xl bg-white dark:bg-surface-800 shadow-premium border border-surface-200 dark:border-surface-700 overflow-hidden z-50",
-                  isProfileOpen
-                    ? "scale-100 opacity-100 pointer-events-auto"
-                    : "scale-95 opacity-0 pointer-events-none",
-                  sidebarCollapsed ? "left-10" : "left-0",
-                ].join(" ")}
-              >
-                {sidebarCollapsed && (
-                  <div className="px-4 py-3 border-b border-surface-100 dark:border-surface-700">
-                    <p className="text-sm font-semibold text-surface-800 dark:text-surface-100 truncate">
-                      {user?.name}
-                    </p>
-                    <p className="text-xs text-surface-500 truncate">
-                      {user?.email}
-                    </p>
-                  </div>
-                )}
-                <button
-                  onClick={logout}
-                  className="flex items-center gap-2 w-full px-4 py-2.5 text-left text-sm text-error hover:bg-error/10 transition-colors"
-                >
-                  <LogOut size={16} />
-                  Sign out
-                </button>
-              </div>
             </div>
 
+            
             <button
               onClick={toggleDark}
-              className="shrink-0 flex items-center justify-center h-9 w-9 rounded-full text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors"
-              aria-label="Toggle dark mode"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors shadow-sm"
+              aria-label="Toggle theme"
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
           </div>
+
+          
+          <button
+            onClick={logout}
+            className={[
+              "flex h-9 items-center gap-3 w-full rounded-xl transition-all duration-200",
+              sidebarCollapsed
+                ? "justify-center text-error bg-error/10 hover:bg-error/20"
+                : "px-4 text-sm font-bold text-error bg-error/5 hover:bg-error/10 border border-error/10 hover:border-error/20",
+            ].join(" ")}
+          >
+            <LogOut size={16} />
+            {!sidebarCollapsed && <span>Sign out</span>}
+          </button>
         </div>
       </aside>
     </>

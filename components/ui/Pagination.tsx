@@ -36,26 +36,25 @@ export const Pagination = ({
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2">
       {totalItems !== undefined && pageSize !== undefined && (
         <div className="text-sm text-surface-500 text-center sm:text-left">
-          <span className="hidden sm:inline">Showing </span>
-          <span className="font-medium text-surface-700 dark:text-surface-200">
+          <span>Showing </span>
+          <span className="font-medium text-surface-900 dark:text-surface-100">
             {startItem}
           </span>{" "}
           to{" "}
-          <span className="font-medium text-surface-700 dark:text-surface-200">
+          <span className="font-medium text-surface-900 dark:text-surface-100">
             {endItem}
           </span>{" "}
-          <span className="hidden sm:inline">of </span>
-          <span className="inline sm:hidden">/ </span>
-          <span className="font-medium text-surface-700 dark:text-surface-200">
+          <span>of </span>
+          <span className="font-medium text-surface-900 dark:text-surface-100">
             {totalItems}
           </span>{" "}
-          <span className="hidden sm:inline">results</span>
+          <span>results</span>
         </div>
       )}
 
-      <div className="flex items-center gap-2 justify-center w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
         {onPageSizeChange && pageSize !== undefined && (
-          <div className="w-32">
+          <div className="w-full sm:w-32">
             <Select
               size="sm"
               direction="up"
@@ -72,13 +71,13 @@ export const Pagination = ({
           </div>
         )}
 
-        <div className="flex items-center gap-1 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-xl overflow-hidden shrink-0 shadow-sm p-0.5 ml-1">
+        <div className="flex items-center gap-1 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-xl overflow-hidden shrink-0 shadow-sm p-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onPageChange(1)}
             disabled={currentPage === 1}
-            className="w-9 h-9 p-0 rounded-lg hidden sm:flex"
+            className="w-8 h-8 sm:w-9 sm:h-9 p-0 rounded-lg"
           >
             <ChevronsLeft size={16} />
           </Button>
@@ -87,12 +86,12 @@ export const Pagination = ({
             size="sm"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="w-9 h-9 p-0 rounded-lg text-surface-600 dark:text-surface-400"
+            className="w-8 h-8 sm:w-9 sm:h-9 p-0 rounded-lg text-surface-600 dark:text-surface-400"
           >
             <ChevronLeft size={16} />
           </Button>
 
-          <div className="px-3 sm:px-4 text-xs sm:text-sm font-semibold text-foreground h-9 flex items-center bg-surface-50 dark:bg-surface-800/50 rounded-lg border border-surface-200/50 dark:border-surface-700/50 mx-0.5 min-w-14 justify-center">
+          <div className="px-3 sm:px-4 text-xs sm:text-sm font-bold text-surface-900 dark:text-surface-100 h-8 sm:h-9 flex items-center bg-surface-50 dark:bg-surface-800/50 rounded-lg border border-surface-100 dark:border-surface-700/50 mx-0.5 min-w-[60px] justify-center italic">
             {currentPage}{" "}
             <span className="mx-1.5 text-surface-400 font-normal">/</span>{" "}
             {totalPages}
@@ -103,7 +102,7 @@ export const Pagination = ({
             size="sm"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="w-9 h-9 p-0 rounded-lg text-surface-600 dark:text-surface-400"
+            className="w-8 h-8 sm:w-9 sm:h-9 p-0 rounded-lg text-surface-600 dark:text-surface-400"
           >
             <ChevronRight size={16} />
           </Button>
@@ -112,7 +111,7 @@ export const Pagination = ({
             size="sm"
             onClick={() => onPageChange(totalPages)}
             disabled={currentPage === totalPages}
-            className="w-9 h-9 p-0 rounded-lg hidden sm:flex"
+            className="w-8 h-8 sm:w-9 sm:h-9 p-0 rounded-lg"
           >
             <ChevronsRight size={16} />
           </Button>
