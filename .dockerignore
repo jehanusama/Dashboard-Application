@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Next.js build output
+.next
+out
+
+# Version control
+.git
+.gitignore
+
+# Development files
+*.md
+.env*.local
+.env.development
+
+# Editor / OS
+.DS_Store
+.vscode
+*.swp
+*.swo
+
+# Testing
+coverage
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Misc
+README.md
