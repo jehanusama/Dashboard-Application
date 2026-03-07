@@ -1,160 +1,149 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-import {
-  Users,
-  TrendingUp,
-  ShoppingCart,
-  DollarSign,
-  ArrowUpRight,
-  ArrowDownRight,
-} from "lucide-react";
-import { MOCK_STATS } from "@/lib/mockData/stats";
-
-const formatValue = (key: string, value: number) => {
-  if (key === "total_revenue") {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(value);
-  }
-  if (key === "conversion_rate") return `${value}%`;
-  return new Intl.NumberFormat("en-US").format(value);
-};
-
-const calculateChange = (value: number, previous: number) => {
-  const diff = ((value - previous) / previous) * 100;
-  const isPositive = diff >= 0;
-  return {
-    text: `${isPositive ? "+" : ""}${diff.toFixed(1)}%`,
-    positive: isPositive,
-  };
-};
-
-const STAT_ICONS: Record<string, React.ElementType> = {
-  total_revenue: DollarSign,
-  active_users: Users,
-  conversion_rate: TrendingUp,
-  pending_orders: ShoppingCart,
-};
-
-const STAT_COLORS: Record<string, string> = {
-  total_revenue:
-    "bg-primary-500/10 text-primary-500 dark:bg-primary-500/20 dark:text-primary-400",
-  active_users:
-    "bg-accent-500/10 text-accent-500 dark:bg-accent-500/20 dark:text-accent-400",
-  conversion_rate: "bg-info/10 text-info dark:bg-info/20 text-info-500",
-  pending_orders:
-    "bg-warning/10 text-warning dark:bg-warning/20 text-warning-500",
-};
-
-const stats = MOCK_STATS.map((stat) => {
-  const { text: change, positive } = calculateChange(
-    stat.value,
-    stat.previousValue,
-  );
-  return {
-    title: stat.label,
-    value: formatValue(stat.key, stat.value),
-    change,
-    positive,
-    icon: STAT_ICONS[stat.key] || Users,
-    color: STAT_COLORS[stat.key] || "bg-gray-100 text-gray-500",
-  };
-});
-
+import Link from "next/link";
+import { Users, TrendingUp, ShoppingCart, DollarSign } from "lucide-react";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import StatCard from "@/components/ui/StatCard";
+import RevenueChart from "@/components/charts/RevenueChart";
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const { transactions } = useAppSelector((s) => s.data);
+
+  const totalRevenue = transactions
+    .filter((t) => t.status === "completed")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalOrders = transactions.length;
+  const pendingOrders = transactions.filter(
+    (t) => t.status === "pending",
+  ).length;
+
+  const recentTransactions = [...transactions]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 5);
+
+  const stats = [
+    {
+      title: "Total Revenue",
+      value: `$${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
+      change: "+12.5%",
+      positive: true,
+      icon: DollarSign,
+      color: "bg-primary-500/10 text-primary-500 shadow-inner-glow",
+    },
+    {
+      title: "Active Users",
+      value: "2,420",
+      change: "+15.2%",
+      positive: true,
+      icon: Users,
+      color: "bg-accent-500/10 text-accent-500 shadow-inner-glow",
+    },
+    {
+      title: "Pending Orders",
+      value: pendingOrders.toString(),
+      change: "-2.1%",
+      positive: false,
+      icon: ShoppingCart,
+      color: "bg-warning-500/10 text-warning-500 shadow-inner-glow",
+    },
+    {
+      title: "Total Orders",
+      value: totalOrders.toString(),
+      change: "+5.4%",
+      positive: true,
+      icon: TrendingUp,
+      color: "bg-info-500/10 text-info-500 shadow-inner-glow",
+    },
+  ];
 
   return (
-    <div className="space-y-8 pb-10">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-surface-800 dark:text-surface-100 italic tracking-tight">
-            Dashboard Overview
-          </h1>
-          <p className="mt-1 text-sm text-surface-500">
-            Welcome back,{" "}
-            <span className="font-semibold text-primary-500">{user?.name}</span>
-            . Here&apos;s your daily summary.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 items-center gap-2 rounded-xl bg-white dark:bg-surface-800 px-3 border border-surface-100 dark:border-surface-700 shadow-sm">
-            <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
-            <span className="text-xs font-medium text-surface-600 dark:text-surface-300">
-              System Live
-            </span>
-          </div>
-        </div>
+    <div className="flex flex-col gap-8 p-dashboard-x py-dashboard-y animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div>
+        <h1 className="text-3xl font-bold text-surface-900 dark:text-surface-100 italic tracking-tight underline decoration-primary-500/30 underline-offset-8">
+          Overview Summary
+        </h1>
+        <p className="mt-2 text-surface-500 dark:text-surface-400">
+          Welcome back,{" "}
+          <span className="font-semibold text-primary-500">{user?.name}</span>.
+          Here&apos;s a quick snapshot of your business.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          const TrendIcon = stat.positive ? ArrowUpRight : ArrowDownRight;
-          return (
-            <div
-              key={stat.title}
-              className="group relative overflow-hidden rounded-2xl bg-white dark:bg-surface-800 p-6 shadow-soft border border-surface-100 dark:border-surface-700 hover:shadow-premium transition-all duration-300"
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <StatCard
+            key={stat.title}
+            label={stat.title}
+            value={stat.value}
+            icon={stat.icon}
+            color={stat.color}
+            trend={{
+              value: stat.change,
+              isPositive: stat.positive,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2">
+          <RevenueChart />
+        </div>
+
+        
+        <div className="glass rounded-2xl p-6 flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-surface-900 dark:text-surface-100 italic">
+              Recent Activity
+            </h3>
+            <Link
+              href="/dashboard/table"
+              className="text-xs font-semibold text-primary-500 hover:text-primary-600 transition-colors"
             >
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-linear-to-br from-primary-500/5 to-accent-500/5 group-hover:scale-150 transition-transform duration-500" />
-
-              <div className="relative flex items-start justify-between">
-                <div>
-                  <p className="text-xs font-semibold tracking-wider text-surface-400 uppercase">
-                    {stat.title}
-                  </p>
-                  <p className="mt-2 text-3xl font-bold text-surface-800 dark:text-surface-100">
-                    {stat.value}
-                  </p>
-                </div>
-                <div
-                  className={`rounded-xl p-3 ${stat.color} shadow-sm group-hover:scale-110 transition-transform duration-300`}
-                >
-                  <Icon size={20} />
-                </div>
-              </div>
-
-              <div className="relative mt-5 flex items-center gap-1.5">
-                <div
-                  className={`flex items-center gap-0.5 rounded-full px-2 py-0.5 ${
-                    stat.positive
-                      ? "bg-success/10 text-success"
-                      : "bg-error/10 text-error"
-                  }`}
-                >
-                  <TrendIcon size={12} strokeWidth={3} />
-                  <span className="text-[10px] font-bold">{stat.change}</span>
-                </div>
-                <span className="text-[10px] text-surface-400 font-medium tracking-tight">
-                  vs previous period
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 gap-8">
-        <div className="rounded-3xl bg-white dark:bg-surface-800 border border-surface-100 dark:border-surface-700 p-8 shadow-soft">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-lg font-bold text-surface-800 dark:text-surface-100">
-                Revenue Insights
-              </h2>
-              <p className="text-sm text-surface-500">
-                Monthly revenue distribution and sales trends.
-              </p>
-            </div>
+              View All
+            </Link>
           </div>
-          <div className="flex h-72 items-center justify-center rounded-2xl border-2 border-dashed border-surface-100 dark:border-surface-700 text-surface-300 font-medium">
-            <div className="flex flex-col items-center gap-2">
-              <TrendingUp size={40} className="text-surface-200" />
-              <span>Revenue Chart Placeholder</span>
-            </div>
+
+          <div className="space-y-4">
+            {recentTransactions.map((tx) => (
+              <div
+                key={tx.id}
+                className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors border border-transparent hover:border-surface-100 dark:hover:border-surface-700 group cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-linear-to-br from-surface-100 to-surface-200 dark:from-surface-700 dark:to-surface-800 flex items-center justify-center text-surface-600 dark:text-surface-300 font-bold group-hover:scale-110 transition-transform">
+                    {tx.customerName.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-surface-900 dark:text-surface-100">
+                      {tx.customerName}
+                    </p>
+                    <p className="text-xs text-surface-500">
+                      {new Date(tx.date).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-surface-900 dark:text-surface-100">
+                    ${tx.amount.toFixed(2)}
+                  </p>
+                  <p
+                    className={`text-[10px] font-bold uppercase tracking-wider ${
+                      tx.status === "completed"
+                        ? "text-success"
+                        : tx.status === "pending"
+                          ? "text-warning"
+                          : "text-error"
+                    }`}
+                  >
+                    {tx.status}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
