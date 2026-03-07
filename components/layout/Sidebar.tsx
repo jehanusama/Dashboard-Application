@@ -38,28 +38,30 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
 
   const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
+    const initTheme = () => {
+      const savedTheme = localStorage.getItem("theme");
+      const systemPrefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
 
-    const shouldBeDark =
-      savedTheme === "dark" || (!savedTheme && systemPrefersDark);
+      const shouldBeDark =
+        savedTheme === "dark" || (!savedTheme && systemPrefersDark);
 
-    if (shouldBeDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+      if (shouldBeDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
 
-    const timer = setTimeout(() => {
       setIsDark(shouldBeDark);
-    }, 0);
+      setMounted(true);
+    };
 
-    return () => clearTimeout(timer);
-  }, [setIsDark]);
+    initTheme();
+  }, []);
 
   const toggleDark = () => {
     const html = document.documentElement;
@@ -94,7 +96,7 @@ export default function Sidebar() {
 
       <aside
         className={[
-          "fixed z-30 flex flex-col transition-all duration-300",
+          "fixed z-30 flex flex-col transition-[width,transform] duration-300 will-change-[width,transform]",
           "bg-white dark:bg-surface-900 text-surface-900 dark:text-surface-100",
           "inset-y-0 left-0 lg:top-4 lg:bottom-4 lg:left-4 lg:h-[calc(100vh-2rem)]",
           "border-r lg:border border-surface-200 dark:border-surface-800",
@@ -108,14 +110,21 @@ export default function Sidebar() {
         <div
           className={[
             "flex h-16 shrink-0 items-center border-b border-surface-200 dark:border-surface-700 px-4",
-            sidebarCollapsed ? "justify-center" : "justify-between",
+            sidebarCollapsed
+              ? "lg:justify-center justify-between"
+              : "justify-between",
           ].join(" ")}
         >
-          {!sidebarCollapsed && (
-            <span className="text-gradient text-xl font-bold tracking-tight select-none">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <span className="text-gradient text-xl font-bold tracking-tight select-none lg:hidden">
               DataDash
             </span>
-          )}
+            {!sidebarCollapsed && (
+              <span className="text-gradient text-xl font-bold tracking-tight select-none hidden lg:block">
+                DataDash
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => dispatch(closeMobileSidebar())}
@@ -140,7 +149,6 @@ export default function Sidebar() {
           </div>
         </div>
 
-        
         <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-2">
           <ul className="space-y-1">
             {navItems.map(({ label, href, icon: Icon }) => {
@@ -170,7 +178,9 @@ export default function Sidebar() {
                         isActive ? "text-primary-600 dark:text-primary-400" : ""
                       }
                     />
-                    {!sidebarCollapsed && <span>{label}</span>}
+                    <span className={sidebarCollapsed ? "lg:hidden" : ""}>
+                      {label}
+                    </span>
                   </Link>
                 </li>
               );
@@ -179,46 +189,47 @@ export default function Sidebar() {
         </nav>
 
         <div className="shrink-0 border-t border-surface-200 dark:border-surface-700 p-4 space-y-4">
-          
           <div
             className={[
               "flex items-center gap-3",
-              sidebarCollapsed ? "flex-col" : "justify-between",
+              sidebarCollapsed
+                ? "lg:flex-col justify-center"
+                : "justify-between",
             ].join(" ")}
           >
-            
             <div
               className={[
                 "flex items-center gap-3 min-w-0",
-                sidebarCollapsed ? "justify-center" : "flex-1 mr-2",
+                sidebarCollapsed ? "lg:justify-center" : "flex-1 mr-2",
               ].join(" ")}
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-primary-500 to-primary-600 text-sm font-bold text-white shadow-sm ring-2 ring-white dark:ring-surface-900 transition-all hover:scale-105">
                 {initials}
               </div>
-              {!sidebarCollapsed && (
-                <div className="overflow-hidden">
-                  <p className="text-sm font-semibold truncate text-surface-900 dark:text-surface-100 uppercase tracking-tight">
-                    {user?.name}
-                  </p>
-                  <p className="text-[10px] text-surface-500 dark:text-surface-400 truncate font-medium">
-                    {user?.email}
-                  </p>
-                </div>
-              )}
+              <div
+                className={[
+                  "overflow-hidden",
+                  sidebarCollapsed ? "lg:hidden" : "",
+                ].join(" ")}
+              >
+                <p className="text-sm font-semibold truncate text-surface-900 dark:text-surface-100 uppercase tracking-tight">
+                  {user?.name}
+                </p>
+                <p className="text-[10px] text-surface-500 dark:text-surface-400 truncate font-medium">
+                  {user?.email}
+                </p>
+              </div>
             </div>
 
-            
             <button
               onClick={toggleDark}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors shadow-sm"
               aria-label="Toggle theme"
             >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              {mounted && (isDark ? <Sun size={18} /> : <Moon size={18} />)}
             </button>
           </div>
 
-          
           <button
             onClick={logout}
             className={[
@@ -229,7 +240,9 @@ export default function Sidebar() {
             ].join(" ")}
           >
             <LogOut size={16} />
-            {!sidebarCollapsed && <span>Sign out</span>}
+            <span className={sidebarCollapsed ? "lg:hidden" : ""}>
+              Sign out
+            </span>
           </button>
         </div>
       </aside>
