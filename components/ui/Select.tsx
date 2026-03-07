@@ -17,6 +17,8 @@ interface SelectProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  size?: "sm" | "md";
+  direction?: "up" | "down";
 }
 
 export const Select = ({
@@ -29,6 +31,8 @@ export const Select = ({
   placeholder = "Select an option",
   className = "",
   disabled = false,
+  size = "md",
+  direction = "down",
 }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -76,8 +80,9 @@ export const Select = ({
           disabled={disabled}
           onClick={() => !disabled && setIsOpen(!isOpen)}
           className={`
-            w-full h-12 bg-white dark:bg-surface-900 border rounded-xl px-4 
+            w-full bg-white dark:bg-surface-900 border rounded-xl 
             flex items-center justify-between transition-all duration-200 outline-none
+            ${size === "sm" ? "h-9 px-3 text-xs" : "h-12 px-4 text-sm"}
             ${isOpen ? "ring-4 ring-primary/10 border-primary" : "border-border shadow-sm"}
             ${error ? "border-error ring-4 ring-error/10" : "hover:border-primary/50"}
             ${disabled ? "opacity-50 cursor-not-allowed bg-surface-50 dark:bg-surface-950" : "cursor-pointer"}
@@ -104,7 +109,12 @@ export const Select = ({
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-2 bg-white dark:bg-zinc-900 border border-border rounded-xl shadow-premium overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div
+            className={`
+              absolute z-50 w-full bg-white dark:bg-zinc-900 border border-border rounded-xl shadow-premium overflow-hidden animate-in fade-in zoom-in-95 duration-200
+              ${direction === "up" ? "bottom-full mb-2" : "top-full mt-2"}
+            `}
+          >
             <div className="max-h-60 overflow-y-auto p-1">
               {options.map((option) => (
                 <button

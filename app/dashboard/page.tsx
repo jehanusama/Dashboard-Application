@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { MOCK_STATS } from "@/lib/mockData/stats";
 
-
 const formatValue = (key: string, value: number) => {
   if (key === "total_revenue") {
     return new Intl.NumberFormat("en-US", {
@@ -23,6 +22,7 @@ const formatValue = (key: string, value: number) => {
   if (key === "conversion_rate") return `${value}%`;
   return new Intl.NumberFormat("en-US").format(value);
 };
+
 const calculateChange = (value: number, previous: number) => {
   const diff = ((value - previous) / previous) * 100;
   const isPositive = diff >= 0;
@@ -64,81 +64,97 @@ const stats = MOCK_STATS.map((stat) => {
   };
 });
 
+
 export default function DashboardPage() {
   const { user } = useAuth();
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-surface-800 dark:text-surface-100">
-          Dashboard Overview
-        </h1>
-        <p className="mt-1 text-sm text-surface-500">
-          Here&apos;s what&apos;s happening with your platform today,{" "}
-          <span className="font-medium text-primary-500">{user?.name}</span>.
-        </p>
+    <div className="space-y-8 pb-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-surface-800 dark:text-surface-100 italic tracking-tight">
+            Dashboard Overview
+          </h1>
+          <p className="mt-1 text-sm text-surface-500">
+            Welcome back,{" "}
+            <span className="font-semibold text-primary-500">{user?.name}</span>
+            . Here&apos;s your daily summary.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 items-center gap-2 rounded-xl bg-white dark:bg-surface-800 px-3 border border-surface-100 dark:border-surface-700 shadow-sm">
+            <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+            <span className="text-xs font-medium text-surface-600 dark:text-surface-300">
+              System Live
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
           const TrendIcon = stat.positive ? ArrowUpRight : ArrowDownRight;
           return (
             <div
               key={stat.title}
-              className="group relative overflow-hidden rounded-2xl bg-white dark:bg-surface-800 p-6 shadow-soft border border-surface-100 dark:border-surface-700 hover:shadow-premium transition-shadow duration-300"
+              className="group relative overflow-hidden rounded-2xl bg-white dark:bg-surface-800 p-6 shadow-soft border border-surface-100 dark:border-surface-700 hover:shadow-premium transition-all duration-300"
             >
               <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-linear-to-br from-primary-500/5 to-accent-500/5 group-hover:scale-150 transition-transform duration-500" />
 
               <div className="relative flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-medium tracking-wide text-surface-500 uppercase">
+                  <p className="text-xs font-semibold tracking-wider text-surface-400 uppercase">
                     {stat.title}
                   </p>
                   <p className="mt-2 text-3xl font-bold text-surface-800 dark:text-surface-100">
                     {stat.value}
                   </p>
                 </div>
-                <div className={`rounded-xl p-2.5 ${stat.color}`}>
-                  <Icon size={22} />
+                <div
+                  className={`rounded-xl p-3 ${stat.color} shadow-sm group-hover:scale-110 transition-transform duration-300`}
+                >
+                  <Icon size={20} />
                 </div>
               </div>
 
-              <div className="relative mt-4 flex items-center gap-1.5">
-                <TrendIcon
-                  size={14}
-                  className={stat.positive ? "text-success" : "text-error"}
-                />
-                <span
-                  className={`text-xs font-semibold ${
-                    stat.positive ? "text-success" : "text-error"
+              <div className="relative mt-5 flex items-center gap-1.5">
+                <div
+                  className={`flex items-center gap-0.5 rounded-full px-2 py-0.5 ${
+                    stat.positive
+                      ? "bg-success/10 text-success"
+                      : "bg-error/10 text-error"
                   }`}
                 >
-                  {stat.change}
+                  <TrendIcon size={12} strokeWidth={3} />
+                  <span className="text-[10px] font-bold">{stat.change}</span>
+                </div>
+                <span className="text-[10px] text-surface-400 font-medium tracking-tight">
+                  vs previous period
                 </span>
-                <span className="text-xs text-surface-400">vs last month</span>
               </div>
             </div>
           );
         })}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-2xl bg-white dark:bg-surface-800 border border-surface-100 dark:border-surface-700 p-6 shadow-soft">
-          <h2 className="text-base font-semibold text-surface-700 dark:text-surface-200 mb-4">
-            Revenue Overview
-          </h2>
-          <div className="flex h-48 items-center justify-center rounded-xl border-2 border-dashed border-surface-200 dark:border-surface-700 text-surface-400 text-sm">
-            Chart component
+      <div className="grid grid-cols-1 gap-8">
+        <div className="rounded-3xl bg-white dark:bg-surface-800 border border-surface-100 dark:border-surface-700 p-8 shadow-soft">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-lg font-bold text-surface-800 dark:text-surface-100">
+                Revenue Insights
+              </h2>
+              <p className="text-sm text-surface-500">
+                Monthly revenue distribution and sales trends.
+              </p>
+            </div>
           </div>
-        </div>
-
-        <div className="rounded-2xl bg-white dark:bg-surface-800 border border-surface-100 dark:border-surface-700 p-6 shadow-soft">
-          <h2 className="text-base font-semibold text-surface-700 dark:text-surface-200 mb-4">
-            Recent Activity
-          </h2>
-          <div className="flex h-48 items-center justify-center rounded-xl border-2 border-dashed border-surface-200 dark:border-surface-700 text-surface-400 text-sm">
-            Activity feed
+          <div className="flex h-72 items-center justify-center rounded-2xl border-2 border-dashed border-surface-100 dark:border-surface-700 text-surface-300 font-medium">
+            <div className="flex flex-col items-center gap-2">
+              <TrendingUp size={40} className="text-surface-200" />
+              <span>Revenue Chart Placeholder</span>
+            </div>
           </div>
         </div>
       </div>
