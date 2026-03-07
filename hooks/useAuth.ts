@@ -1,13 +1,14 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector } from "./useAppSelector";
+import { useAppDispatch } from "./useAppDispatch";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/store";
 import { logout } from "@/store/authSlice";
 
 export function useAuth() {
-  const { user, token, isAuthenticated, isInitialized } = useSelector(
+  const { user, token, isAuthenticated, isInitialized } = useAppSelector(
     (state: RootState) => state.auth,
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleLogout = () => {

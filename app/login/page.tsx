@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api/auth";
 import { setCredentials } from "@/store/authSlice";
@@ -22,7 +22,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {

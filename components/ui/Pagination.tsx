@@ -8,6 +8,13 @@ import {
 import { Select } from "./Select";
 import { Button } from "./Button";
 
+const PAGE_SIZE_OPTIONS = [
+  { label: "8 per page", value: 8 },
+  { label: "10 per page", value: 10 },
+  { label: "20 per page", value: 20 },
+  { label: "50 per page", value: 50 },
+];
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -59,12 +66,7 @@ export const Pagination = ({
               size="sm"
               direction="up"
               value={pageSize}
-              options={[
-                { label: "8 per page", value: 8 },
-                { label: "10 per page", value: 10 },
-                { label: "20 per page", value: 20 },
-                { label: "50 per page", value: 50 },
-              ]}
+              options={PAGE_SIZE_OPTIONS}
               onChange={(val: string | number) => onPageSizeChange(Number(val))}
               className="space-y-0!"
             />

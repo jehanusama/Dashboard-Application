@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useCallback, useMemo, useEffect, useRef } from "react";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { RootState } from "@/store";
 import {
   setSearch,
@@ -15,15 +16,59 @@ import { LoadingOverlay } from "@/components/ui/Loading";
 import { TableControls } from "./TableControls";
 import { Badge } from "@/components/ui/Badge";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import { Transaction } from "@/lib/mockData/types";
+import { Transaction, TransactionStatus } from "@/lib/mockData/types";
 import { exportToPDF, exportToExcel } from "@/lib/utils/exportUtils";
 
-export const TransactionTable: React.FC = () => {
-  const dispatch = useDispatch();
-  const { filteredTransactions, filters, sort, pagination, isLoading } =
-    useSelector((state: RootState) => state.data);
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 
-  
+const STATUS_VARIANTS: Record<
+  string,
+  "success" | "warning" | "error" | "neutral"
+> = {
+  completed: "success",
+  pending: "warning",
+  cancelled: "error",
+  refunded: "neutral",
+};
+
+interface TransactionRowProps {
+  transaction: Transaction;
+}
+
+const TransactionRow = React.memo(({ transaction: t }: TransactionRowProps) => (
+  <Tr>
+    <Td className="font-mono text-xs font-semibold">{t.id}</Td>
+    <Td>{t.date}</Td>
+    <Td>
+      <div className="flex flex-col">
+        <span className="font-medium text-surface-900 dark:text-surface-100">
+          {t.customerName}
+        </span>
+        <span className="text-xs text-surface-500">{t.customerEmail}</span>
+      </div>
+    </Td>
+    <Td className="font-semibold text-surface-900 dark:text-surface-100">
+      {currencyFormatter.format(t.amount)}
+    </Td>
+    <Td>
+      <Badge variant={STATUS_VARIANTS[t.status]} className="capitalize">
+        {t.status}
+      </Badge>
+    </Td>
+    <Td className="capitalize text-xs font-medium">
+      {t.method.replace("_", " ")}
+    </Td>
+  </Tr>
+));
+TransactionRow.displayName = "TransactionRow";
+
+export const TransactionTable: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { filteredTransactions, filters, sort, pagination, isLoading } =
+    useAppSelector((state: RootState) => state.data);
   useEffect(() => {
     dispatch(setLoading(true));
     const timer = setTimeout(() => {
@@ -32,57 +77,85 @@ export const TransactionTable: React.FC = () => {
     return () => clearTimeout(timer);
   }, [dispatch, filters, sort]);
 
-  
-  const totalPages = Math.ceil(
-    filteredTransactions.length / pagination.pageSize,
-  );
-  const paginatedData = filteredTransactions.slice(
-    (pagination.currentPage - 1) * pagination.pageSize,
-    pagination.currentPage * pagination.pageSize,
+  const totalPages = useMemo(
+    () => Math.ceil(filteredTransactions.length / pagination.pageSize) || 1,
+    [filteredTransactions.length, pagination.pageSize],
   );
 
-  const handleSort = (key: keyof Transaction) => {
-    dispatch(setSort(key));
-  };
+  const paginatedData = useMemo(
+    () =>
+      filteredTransactions.slice(
+        (pagination.currentPage - 1) * pagination.pageSize,
+        pagination.currentPage * pagination.pageSize,
+      ),
+    [filteredTransactions, pagination.currentPage, pagination.pageSize],
+  );
 
-  const getSortIcon = (key: keyof Transaction) => {
-    if (sort.key !== key) return null;
-    return sort.direction === "asc" ? (
-      <ArrowUp size={14} className="inline ml-1 text-primary-500" />
-    ) : (
-      <ArrowDown size={14} className="inline ml-1 text-primary-500" />
-    );
-  };
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const statusVariants: Record<
-    string,
-    "success" | "warning" | "error" | "neutral"
-  > = {
-    completed: "success",
-    pending: "warning",
-    cancelled: "error",
-    refunded: "neutral",
-  };
+  const handleSearchChange = useCallback(
+    (val: string) => {
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+      searchTimerRef.current = setTimeout(() => {
+        dispatch(setSearch(val));
+      }, 300);
+    },
+    [dispatch],
+  );
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
+  const handleStatusChange = useCallback(
+    (status: TransactionStatus | "all") => dispatch(setStatusFilter(status)),
+    [dispatch],
+  );
+
+  const handleSort = useCallback(
+    (key: keyof Transaction) => dispatch(setSort(key)),
+    [dispatch],
+  );
+
+  const handlePageChange = useCallback(
+    (page: number) => dispatch(setPage(page)),
+    [dispatch],
+  );
+
+  const handlePageSizeChange = useCallback(
+    (size: number) => dispatch(setPageSize(size)),
+    [dispatch],
+  );
+
+  const handleExportPDF = useCallback(
+    () => exportToPDF(filteredTransactions),
+    [filteredTransactions],
+  );
+
+  const handleExportExcel = useCallback(
+    () => exportToExcel(filteredTransactions),
+    [filteredTransactions],
+  );
+
+  const getSortIcon = useCallback(
+    (key: keyof Transaction) => {
+      if (sort.key !== key) return null;
+      return sort.direction === "asc" ? (
+        <ArrowUp size={14} className="inline ml-1 text-primary-500" />
+      ) : (
+        <ArrowDown size={14} className="inline ml-1 text-primary-500" />
+      );
+    },
+    [sort.key, sort.direction],
+  );
 
   return (
     <div className="space-y-4 relative">
-      
       {isLoading && <LoadingOverlay />}
 
       <TableControls
         search={filters.search}
-        onSearchChange={(val) => dispatch(setSearch(val))}
+        onSearchChange={handleSearchChange}
         status={filters.status}
-        onStatusChange={(status) => dispatch(setStatusFilter(status))}
-        onExportPDF={() => exportToPDF(filteredTransactions)}
-        onExportExcel={() => exportToExcel(filteredTransactions)}
+        onStatusChange={handleStatusChange}
+        onExportPDF={handleExportPDF}
+        onExportExcel={handleExportExcel}
       />
 
       <Table>
@@ -109,34 +182,7 @@ export const TransactionTable: React.FC = () => {
         <TBody>
           {paginatedData.length > 0 ? (
             paginatedData.map((t) => (
-              <Tr key={t.id}>
-                <Td className="font-mono text-xs font-semibold">{t.id}</Td>
-                <Td>{t.date}</Td>
-                <Td>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-surface-900 dark:text-surface-100">
-                      {t.customerName}
-                    </span>
-                    <span className="text-xs text-surface-500">
-                      {t.customerEmail}
-                    </span>
-                  </div>
-                </Td>
-                <Td className="font-semibold text-surface-900 dark:text-surface-100">
-                  {formatCurrency(t.amount)}
-                </Td>
-                <Td>
-                  <Badge
-                    variant={statusVariants[t.status]}
-                    className="capitalize"
-                  >
-                    {t.status}
-                  </Badge>
-                </Td>
-                <Td className="capitalize text-xs font-medium">
-                  {t.method.replace("_", " ")}
-                </Td>
-              </Tr>
+              <TransactionRow key={t.id} transaction={t} />
             ))
           ) : (
             <Tr>
@@ -153,8 +199,8 @@ export const TransactionTable: React.FC = () => {
         totalPages={totalPages}
         totalItems={filteredTransactions.length}
         pageSize={pagination.pageSize}
-        onPageChange={(page) => dispatch(setPage(page))}
-        onPageSizeChange={(size) => dispatch(setPageSize(size))}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
       />
     </div>
   );

@@ -2,7 +2,8 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
+import { useAppSelector } from "@/hooks/useAppSelector";
 import { store, RootState } from "@/store";
 import { restoreSession } from "@/store/authSlice";
 import { useEffect } from "react";
@@ -19,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 function AppInitializer({ children }: { children: React.ReactNode }) {
-  const isInitialized = useSelector((s: RootState) => s.auth.isInitialized);
+  const isInitialized = useAppSelector((s: RootState) => s.auth.isInitialized);
 
   useEffect(() => {
     // restoreSession reads localStorage — must run client-side only
