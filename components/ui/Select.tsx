@@ -89,7 +89,7 @@ export const Select = ({
           `}
         >
           <span
-            className={`truncate ${!selectedOption ? "text-surface-400" : "text-foreground"}`}
+            className={`truncate ${!selectedOption ? "text-surface-400" : "text-surface-900 dark:text-surface-100"}`}
           >
             {selectedOption ? selectedOption.label : placeholder}
           </span>
@@ -111,7 +111,7 @@ export const Select = ({
         {isOpen && (
           <div
             className={`
-              absolute z-50 w-full bg-white dark:bg-zinc-900 border border-border rounded-xl shadow-premium overflow-hidden animate-in fade-in zoom-in-95 duration-200
+              absolute z-50 w-full bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-premium overflow-hidden animate-in fade-in zoom-in-95 duration-200
               ${direction === "up" ? "bottom-full mb-2" : "top-full mt-2"}
             `}
           >
@@ -126,7 +126,7 @@ export const Select = ({
                     ${
                       option.value === value
                         ? "bg-primary text-primary-foreground font-medium"
-                        : "text-foreground hover:bg-surface-100 dark:hover:bg-surface-800"
+                        : "text-surface-900 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-800"
                     }
                   `}
                 >
