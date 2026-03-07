@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <Sidebar />
       <main
         className={[
-          "flex flex-col min-h-screen transition-all duration-300",
+          "flex flex-col min-h-screen transition-[padding] duration-300 will-change-[padding]",
           sidebarCollapsed ? "lg:pl-[104px]" : "lg:pl-72",
         ].join(" ")}
       >
