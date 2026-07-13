@@ -14,6 +14,7 @@ import {
   Moon,
   LogOut,
   Users,
+  Settings,
 } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -31,6 +32,7 @@ const navItems: NavItem[] = [
   { label: "Data Table", href: "/dashboard/table", icon: Table2 },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { label: "Users", href: "/dashboard/users", icon: Users },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -63,6 +65,9 @@ export default function Sidebar() {
     };
 
     initTheme();
+    
+    window.addEventListener("theme-change", initTheme);
+    return () => window.removeEventListener("theme-change", initTheme);
   }, []);
 
   const toggleDark = () => {
@@ -76,6 +81,7 @@ export default function Sidebar() {
       localStorage.setItem("theme", "dark");
       setIsDark(true);
     }
+    window.dispatchEvent(new Event("theme-change"));
   };
 
   const initials = user?.name
