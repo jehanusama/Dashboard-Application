@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { RootState } from "@/store";
@@ -38,31 +39,38 @@ interface TransactionRowProps {
   transaction: Transaction;
 }
 
-const TransactionRow = React.memo(({ transaction: t }: TransactionRowProps) => (
-  <Tr>
-    <Td className="font-mono text-xs font-semibold">{t.id}</Td>
-    <Td>{t.date}</Td>
-    <Td>
-      <div className="flex flex-col">
-        <span className="font-medium text-surface-900 dark:text-surface-100">
-          {t.customerName}
-        </span>
-        <span className="text-xs text-surface-500">{t.customerEmail}</span>
-      </div>
-    </Td>
-    <Td className="font-semibold text-surface-900 dark:text-surface-100">
-      {currencyFormatter.format(t.amount)}
-    </Td>
-    <Td>
-      <Badge variant={STATUS_VARIANTS[t.status]} className="capitalize">
-        {t.status}
-      </Badge>
-    </Td>
-    <Td className="capitalize text-xs font-medium">
-      {t.method.replace("_", " ")}
-    </Td>
-  </Tr>
-));
+const TransactionRow = React.memo(({ transaction: t }: TransactionRowProps) => {
+  const router = useRouter();
+
+  return (
+    <Tr
+      onClick={() => router.push(`/dashboard/transactions/${t.id}`)}
+      className="cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+    >
+      <Td className="font-mono text-xs font-semibold">{t.id}</Td>
+      <Td>{t.date}</Td>
+      <Td>
+        <div className="flex flex-col">
+          <span className="font-medium text-surface-900 dark:text-surface-100">
+            {t.customerName}
+          </span>
+          <span className="text-xs text-surface-500">{t.customerEmail}</span>
+        </div>
+      </Td>
+      <Td className="font-semibold text-surface-900 dark:text-surface-100">
+        {currencyFormatter.format(t.amount)}
+      </Td>
+      <Td>
+        <Badge variant={STATUS_VARIANTS[t.status]} className="capitalize">
+          {t.status}
+        </Badge>
+      </Td>
+      <Td className="capitalize text-xs font-medium">
+        {t.method.replace("_", " ")}
+      </Td>
+    </Tr>
+  );
+});
 TransactionRow.displayName = "TransactionRow";
 
 export const TransactionTable: React.FC = () => {

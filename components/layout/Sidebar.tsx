@@ -13,6 +13,10 @@ import {
   Sun,
   Moon,
   LogOut,
+  Users,
+  Settings,
+  Bell,
+  ClipboardList,
 } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -29,6 +33,10 @@ const navItems: NavItem[] = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { label: "Data Table", href: "/dashboard/table", icon: Table2 },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { label: "Users", href: "/dashboard/users", icon: Users },
+  { label: "Notifications", href: "/dashboard/notifications", icon: Bell },
+  { label: "Activity Logs", href: "/dashboard/activity", icon: ClipboardList },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -36,6 +44,9 @@ export default function Sidebar() {
   const { sidebarCollapsed, mobileSidebarOpen } = useAppSelector((s) => s.ui);
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const unreadNotifCount = useAppSelector((s) =>
+    s.notifications.items.filter((n) => !n.read).length
+  );
 
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -61,6 +72,9 @@ export default function Sidebar() {
     };
 
     initTheme();
+    
+    window.addEventListener("theme-change", initTheme);
+    return () => window.removeEventListener("theme-change", initTheme);
   }, []);
 
   const toggleDark = () => {
@@ -74,6 +88,7 @@ export default function Sidebar() {
       localStorage.setItem("theme", "dark");
       setIsDark(true);
     }
+    window.dispatchEvent(new Event("theme-change"));
   };
 
   const initials = user?.name
@@ -181,6 +196,14 @@ export default function Sidebar() {
                     <span className={sidebarCollapsed ? "lg:hidden" : ""}>
                       {label}
                     </span>
+                    {label === "Notifications" && unreadNotifCount > 0 && (
+                      <span className={[
+                        "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white px-1",
+                        sidebarCollapsed ? "lg:hidden" : "",
+                      ].join(" ")}>
+                        {unreadNotifCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );

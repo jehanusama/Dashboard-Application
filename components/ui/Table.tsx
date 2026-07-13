@@ -31,12 +31,14 @@ export const TBody: React.FC<{ children: React.ReactNode }> = ({
   </tbody>
 );
 
-export const Tr: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-}> = ({ children, className = "" }) => (
+export const Tr: React.FC<React.HTMLAttributes<HTMLTableRowElement>> = ({
+  children,
+  className = "",
+  ...props
+}) => (
   <tr
     className={`hover:bg-surface-50/50 dark:hover:bg-surface-900/10 transition-colors ${className}`}
+    {...props}
   >
     {children}
   </tr>
