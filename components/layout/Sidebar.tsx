@@ -15,6 +15,7 @@ import {
   LogOut,
   Users,
   Settings,
+  Bell,
 } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -32,6 +33,7 @@ const navItems: NavItem[] = [
   { label: "Data Table", href: "/dashboard/table", icon: Table2 },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { label: "Users", href: "/dashboard/users", icon: Users },
+  { label: "Notifications", href: "/dashboard/notifications", icon: Bell },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
@@ -40,6 +42,9 @@ export default function Sidebar() {
   const { sidebarCollapsed, mobileSidebarOpen } = useAppSelector((s) => s.ui);
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const unreadNotifCount = useAppSelector((s) =>
+    s.notifications.items.filter((n) => !n.read).length
+  );
 
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -189,6 +194,14 @@ export default function Sidebar() {
                     <span className={sidebarCollapsed ? "lg:hidden" : ""}>
                       {label}
                     </span>
+                    {label === "Notifications" && unreadNotifCount > 0 && (
+                      <span className={[
+                        "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white px-1",
+                        sidebarCollapsed ? "lg:hidden" : "",
+                      ].join(" ")}>
+                        {unreadNotifCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );
