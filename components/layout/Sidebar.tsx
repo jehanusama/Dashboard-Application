@@ -16,6 +16,7 @@ import {
   Users,
   Settings,
   Bell,
+  ClipboardList,
 } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -34,6 +35,7 @@ const navItems: NavItem[] = [
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { label: "Users", href: "/dashboard/users", icon: Users },
   { label: "Notifications", href: "/dashboard/notifications", icon: Bell },
+  { label: "Activity Logs", href: "/dashboard/activity", icon: ClipboardList },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
