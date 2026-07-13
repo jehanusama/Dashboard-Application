@@ -13,6 +13,7 @@ import {
   Sun,
   Moon,
   LogOut,
+  Users,
 } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -29,6 +30,7 @@ const navItems: NavItem[] = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { label: "Data Table", href: "/dashboard/table", icon: Table2 },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { label: "Users", href: "/dashboard/users", icon: Users },
 ];
 
 export default function Sidebar() {
