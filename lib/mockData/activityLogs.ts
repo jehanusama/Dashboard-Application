@@ -13,8 +13,6 @@ export interface ActivityLog {
   status: LogStatus;
 }
 
-const modules: LogModule[] = ["Auth", "Users", "Payments", "Settings", "Reports", "Security"];
-
 const entries: Omit<ActivityLog, "id">[] = [
   { user: "Alice Johnson",   userEmail: "alice@example.com",   action: "Logged in",              module: "Auth",      date: "2024-03-27", time: "14:32:05", ip: "192.168.1.10", status: "success" },
   { user: "Bob Smith",       userEmail: "bob@example.com",     action: "Updated user profile",   module: "Users",     date: "2024-03-27", time: "13:18:44", ip: "10.0.0.5",     status: "success" },

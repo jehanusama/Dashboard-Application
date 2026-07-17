@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { MOCK_ACTIVITY_LOGS, ActivityLog, LogStatus, LogModule } from "@/lib/mockData/activityLogs";
+import { MOCK_ACTIVITY_LOGS, ActivityLog, LogStatus } from "@/lib/mockData/activityLogs";
 import { Table, THead, TBody, Tr, Th, Td } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
