@@ -18,6 +18,7 @@ import {
   Bell,
   ClipboardList,
 } from "lucide-react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { toggleSidebar, closeMobileSidebar } from "@/store/uiSlice";
@@ -50,6 +51,15 @@ export default function Sidebar() {
 
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    // Add artificial delay for animation
+    await new Promise(r => setTimeout(r, 600));
+    logout();
+  };
 
   useEffect(() => {
     const initTheme = () => {
@@ -254,7 +264,7 @@ export default function Sidebar() {
           </div>
 
           <button
-            onClick={logout}
+            onClick={() => setIsLogoutModalOpen(true)}
             className={[
               "flex h-9 items-center gap-3 w-full rounded-xl transition-all duration-200",
               sidebarCollapsed
@@ -269,6 +279,18 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
+
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+        title="Sign Out"
+        description="Are you sure you want to sign out of your account? You will need to log back in to access the dashboard."
+        confirmText="Sign Out"
+        confirmVariant="danger"
+        isLoading={isLoggingOut}
+        icon={<LogOut size={28} />}
+      />
     </>
   );
 }

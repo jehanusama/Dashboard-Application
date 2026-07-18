@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ArrowLeft, Mail, Phone, MapPin, Calendar, Clock, Activity, Shield, LogIn } from "lucide-react";
 import StatCard from "@/components/ui/StatCard";
+import { DeleteAction } from "@/components/ui/DeleteAction";
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -49,13 +50,16 @@ export default async function UserDetailsPage({ params }: PageProps) {
             <p className="text-surface-500 font-mono text-sm">{user.id}</p>
           </div>
         </div>
-        <Link
-          href="/dashboard/users"
-          className="inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] border-2 border-primary-500 text-primary-500 hover:bg-primary-500/5 h-11 px-6 text-sm gap-2"
-        >
-          <ArrowLeft size={16} />
-          <span>Back to Users</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <DeleteAction id={user.id} entityType="user" returnUrl="/dashboard/users" />
+          <Link
+            href="/dashboard/users"
+            className="inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] border-2 border-primary-500 text-primary-500 hover:bg-primary-500/5 h-11 px-6 text-sm gap-2"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Users</span>
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}

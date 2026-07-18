@@ -1,20 +1,23 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { MOCK_ACTIVITY_LOGS, ActivityLog, LogStatus, LogModule } from "@/lib/mockData/activityLogs";
+import { MOCK_ACTIVITY_LOGS, ActivityLog, LogStatus } from "@/lib/mockData/activityLogs";
 import { Table, THead, TBody, Tr, Th, Td } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
+import { NoSearchResultsState } from "@/components/ui/EmptyState";
 import {
   Search,
   Download,
   ClipboardList,
   ChevronUp,
   ChevronDown,
+  FilterX,
 } from "lucide-react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -81,6 +84,7 @@ export default function ActivityLogsPage() {
   const [sortKey, setSortKey] = useState<SortKey>("date");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
   const pageSize = 10;
 
   const handleSort = (key: SortKey) => {
@@ -206,7 +210,7 @@ export default function ActivityLogsPage() {
             />
             {hasActiveFilters && (
               <button
-                onClick={resetFilters}
+                onClick={() => setIsClearModalOpen(true)}
                 className="text-xs font-semibold text-error hover:text-error/80 transition-colors px-2 py-1"
               >
                 Clear all
@@ -281,10 +285,11 @@ export default function ActivityLogsPage() {
             ) : (
               <Tr>
                 <Td colSpan={7}>
-                  <div className="flex flex-col items-center justify-center py-16 text-surface-400">
-                    <ClipboardList size={40} className="mb-3 opacity-20" />
-                    <p className="font-semibold">No logs found</p>
-                    <p className="text-xs mt-1">Try adjusting your filters or date range.</p>
+                  <div className="py-6">
+                    <NoSearchResultsState
+                      query={search}
+                      onAction={hasActiveFilters ? resetFilters : undefined}
+                    />
                   </div>
                 </Td>
               </Tr>
@@ -300,6 +305,20 @@ export default function ActivityLogsPage() {
         totalItems={filtered.length}
         onPageChange={setCurrentPage}
         onPageSizeChange={() => {}}
+      />
+
+      <ConfirmModal
+        isOpen={isClearModalOpen}
+        onClose={() => setIsClearModalOpen(false)}
+        onConfirm={() => {
+          resetFilters();
+          setIsClearModalOpen(false);
+        }}
+        title="Clear Filters"
+        description="Are you sure you want to clear all active filters and search terms? This cannot be undone."
+        confirmText="Clear Filters"
+        confirmVariant="danger"
+        icon={<FilterX size={28} />}
       />
     </div>
   );

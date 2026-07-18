@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Pagination } from "@/components/ui/Pagination";
+import { NoSearchResultsState } from "@/components/ui/EmptyState";
 import { Search } from "lucide-react";
 
 const STATUS_VARIANTS: Record<UserStatus, "success" | "error" | "warning" | "neutral"> = {
@@ -152,8 +153,21 @@ export const UsersTable = () => {
             ))
           ) : (
             <Tr>
-              <Td colSpan={6} className="h-32 text-center text-surface-400">
-                No users found.
+              <Td colSpan={6}>
+                <div className="py-6">
+                  <NoSearchResultsState
+                    query={search}
+                    onAction={
+                      search || roleFilter !== "all" || statusFilter !== "all"
+                        ? () => {
+                            setSearch("");
+                            setRoleFilter("all");
+                            setStatusFilter("all");
+                          }
+                        : undefined
+                    }
+                  />
+                </div>
               </Td>
             </Tr>
           )}

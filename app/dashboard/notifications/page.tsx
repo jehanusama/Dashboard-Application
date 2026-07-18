@@ -8,17 +8,17 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { NoNotificationsState, NoSearchResultsState } from "@/components/ui/EmptyState";
 import {
   Bell,
   Search,
   CheckCheck,
-  Trash2,
   Check,
+  Trash2,
   Shield,
   CreditCard,
   User,
   AlertCircle,
-  Inbox,
 } from "lucide-react";
 import { NotificationCategory } from "@/lib/mockData/notifications";
 
@@ -179,12 +179,19 @@ export default function NotificationsPage() {
       <div className="space-y-3">
         {filtered.length === 0 ? (
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-20 text-surface-400">
-              <Inbox size={52} className="mb-4 opacity-20" />
-              <p className="text-lg font-semibold">No notifications found</p>
-              <p className="text-sm mt-1 text-surface-400">
-                {search ? "Try adjusting your search term." : "Check back later for updates."}
-              </p>
+            <CardContent className="p-0">
+              {search || filter !== "all" || categoryFilter !== "all" ? (
+                <NoSearchResultsState
+                  query={search}
+                  onAction={() => {
+                    setSearch("");
+                    setFilter("all");
+                    setCategoryFilter("all");
+                  }}
+                />
+              ) : (
+                <NoNotificationsState />
+              )}
             </CardContent>
           </Card>
         ) : (
