@@ -15,6 +15,7 @@ import { Table, THead, TBody, Tr, Th, Td } from "@/components/ui/Table";
 import { Pagination } from "@/components/ui/Pagination";
 import { LoadingOverlay } from "@/components/ui/Loading";
 import { TableControls } from "./TableControls";
+import { NoTransactionsState } from "@/components/ui/EmptyState";
 import { Badge } from "@/components/ui/Badge";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { Transaction, TransactionStatus } from "@/lib/mockData/types";
@@ -194,8 +195,15 @@ export const TransactionTable: React.FC = () => {
             ))
           ) : (
             <Tr>
-              <Td colSpan={6} className="h-48 text-center text-surface-400">
-                No transactions found matching your filters.
+              <Td colSpan={6}>
+                <div className="py-6">
+                  <NoTransactionsState
+                    onAction={() => {
+                      dispatch(setSearch(""));
+                      dispatch(setStatusFilter("all"));
+                    }}
+                  />
+                </div>
               </Td>
             </Tr>
           )}

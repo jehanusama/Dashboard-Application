@@ -5,6 +5,7 @@ import { Search, X, Users, CreditCard, FileText, ArrowRight, Clock } from "lucid
 import { useRouter } from "next/navigation";
 import { MOCK_MANAGEMENT_USERS } from "@/lib/mockData/usersList";
 import { MOCK_TRANSACTIONS } from "@/lib/mockData/transactions";
+import { NoSearchResultsState } from "@/components/ui/EmptyState";
 
 type SearchResult = {
   id: string;
@@ -240,14 +241,8 @@ export const GlobalSearch = () => {
                   ))}
                 </ul>
               ) : (
-                <div className="py-16 px-6 text-center flex flex-col items-center text-surface-500">
-                  <Search size={40} className="mb-4 text-surface-300 dark:text-surface-600" />
-                  <p className="text-base font-semibold text-surface-900 dark:text-white">
-                    No results found for &ldquo;{query}&rdquo;
-                  </p>
-                  <p className="text-sm mt-1">
-                    Try searching for something else or check your spelling.
-                  </p>
+                <div className="py-2">
+                  <NoSearchResultsState query={query} onAction={close} />
                 </div>
               )}
             </div>

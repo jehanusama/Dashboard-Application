@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Table, THead, TBody, Tr, Th, Td } from "@/components/ui/Table";
+import { DeleteAction } from "@/components/ui/DeleteAction";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -81,13 +82,16 @@ export default async function TransactionDetailsPage({ params }: PageProps) {
             </Badge>
           </h1>
         </div>
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] border-2 border-primary-500 text-primary-500 hover:bg-primary-500/5 h-11 px-6 text-sm gap-2"
-        >
-          <ArrowLeft size={16} />
-          <span>Back to Transactions</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <DeleteAction id={transaction.id} entityType="transaction" returnUrl="/dashboard/table" />
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] border-2 border-primary-500 text-primary-500 hover:bg-primary-500/5 h-11 px-6 text-sm gap-2"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Transactions</span>
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
